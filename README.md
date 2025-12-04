@@ -2,8 +2,9 @@
 
 A real-time collaborative playlist application where multiple users can simultaneously manage a shared music playlist with instant synchronization across all connected clients.
 
-## Video Link
-![project video](https://drive.google.com/file/d/1GbuSEC4aVNlXfPgzegKIKfvdvBCaLmsm/view?usp=sharing)
+## 🎥 Video Demo
+
+📹 **[Watch Project Demo Video](https://drive.google.com/file/d/1GbuSEC4aVNlXfPgzegKIKfvdvBCaLmsm/view?usp=sharing)**
 
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 ![Python](https://img.shields.io/badge/python-3.10+-blue.svg)
