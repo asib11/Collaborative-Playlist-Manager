@@ -14,20 +14,7 @@ logger = logging.getLogger(__name__)
 
 
 class PlaylistViewSet(viewsets.ModelViewSet):
-    """
-    ViewSet for managing collaborative playlist.
-    
-    Provides endpoints for:
-    - Listing current playlist
-    - Adding tracks to playlist
-    - Removing tracks from playlist
-    - Reordering tracks via position updates
-    - Voting on tracks
-    - Viewing playlist history
-    
-    All modifications trigger real-time WebSocket events to connected clients.
-    """
-    
+
     queryset = PlaylistTrack.objects.select_related('track').all()
     serializer_class = PlaylistTrackSerializer
     
@@ -68,10 +55,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
     )
     @transaction.atomic
     def create(self, request):
-        """
-        Add track to playlist with automatic position calculation.
-        Prevents duplicate tracks.
-        """
         from apps.realtime.utils import broadcast_playlist_event
         
         # Get track_id from either 'track_id' or 'track' field
@@ -114,7 +97,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
         serializer.is_valid(raise_exception=True)
         playlist_track = serializer.save()
         
-        # Broadcast event to all connected clients
         broadcast_playlist_event('track.added', serializer.data)
         
         logger.info(f"Track {track_id} added to playlist by {added_by}")
@@ -152,10 +134,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
     )
     @transaction.atomic
     def partial_update(self, request, pk=None):
-        """
-        Update track position or playing state.
-        Ensures only one track can be playing at a time.
-        """
         from apps.realtime.utils import broadcast_playlist_event
         
         instance = self.get_object()
@@ -166,7 +144,6 @@ class PlaylistViewSet(viewsets.ModelViewSet):
             PlaylistTrack.objects.exclude(pk=instance.pk).update(is_playing=False)
             instance.is_playing = True
             
-            # Update played_at timestamp
             from django.utils import timezone
             instance.played_at = timezone.now()
             

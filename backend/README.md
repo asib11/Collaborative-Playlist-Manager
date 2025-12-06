@@ -359,24 +359,35 @@ pytest -v
 
 ### Decorator Design Pattern
 
-The backend extensively uses the **Decorator Pattern** for cross-cutting concerns:
+The backend uses the **Decorator Pattern** for cross-cutting concerns:
 
-**Decorators in `apps/realtime/decorators.py`:**
-- `@broadcast_event(event_type)` - Automatically broadcast events to WebSocket clients
-- `@validate_playing_state` - Ensure only one track is playing
-- `@prevent_duplicate_track` - Validate against duplicate tracks
-- `@log_action(name)` - Log user actions
-- `@rate_limit(max_calls, period)` - Rate limiting for API calls
-- `@cache_result(timeout)` - Cache function results
+**Active Decorators in `apps/realtime/decorators.py`:**
+- `@require_websocket_connection` - Ensures WebSocket connection is active before processing messages
+
+**Real-time Broadcasting:**
+Instead of using decorators, the application uses a utility function approach for broadcasting events:
+- `broadcast_playlist_event(event_type, payload)` in `apps/realtime/utils.py`
+- Called explicitly in views after database operations
+- Provides fine-grained control over what data is broadcast
 
 **Example Usage:**
 ```python
 @transaction.atomic
-@log_action('add_track')
 def create(self, request):
     # Business logic here
-    broadcast_playlist_event('track.added', data)
+    serializer.save()
+    
+    # Explicitly broadcast event
+    broadcast_playlist_event('track.added', serializer.data)
 ```
+
+**Note:** Several decorators are defined but commented out in `decorators.py` as they're not currently used:
+- `@broadcast_event` - Replaced by `broadcast_playlist_event()` utility function
+- `@validate_playing_state` - Validation handled directly in views
+- `@prevent_duplicate_track` - Duplicate checking done in views
+- `@log_action` - Not implemented
+- `@rate_limit` - Not implemented
+- `@cache_result` - Not implemented
 
 ### Position Algorithm
 

@@ -7,6 +7,9 @@ set -e
 echo "🔧 Running database migrations..."
 python manage.py migrate --noinput
 
+echo "📦 Collecting static files..."
+python manage.py collectstatic --noinput
+
 # Check if we need to seed data
 echo "📊 Checking if database needs seeding..."
 TRACK_COUNT=$(python manage.py shell -c "from apps.tracks.models import Track; print(Track.objects.count())")

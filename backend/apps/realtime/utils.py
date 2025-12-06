@@ -1,6 +1,3 @@
-"""
-Utility functions for realtime event broadcasting.
-"""
 from channels.layers import get_channel_layer
 from asgiref.sync import async_to_sync
 import logging
