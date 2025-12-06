@@ -68,10 +68,8 @@ export const PlaylistProvider = ({ children }) => {
           position: newPosition,
         });
 
-        // Optimistically update UI
-        setPlaylist((prev) =>
-          [...prev, newItem].sort((a, b) => a.position - b.position)
-        );
+        // Don't update state here - let WebSocket event handle it
+        // to avoid duplicates
         return newItem;
       } catch (err) {
         setError(err.message || "Failed to add track");
