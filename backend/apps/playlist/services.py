@@ -38,21 +38,3 @@ def calculate_position(prev_position=None, next_position=None):
     new_position = (prev_position + next_position) / 2
     logger.debug(f"Calculating position between {prev_position} and {next_position}: {new_position}")
     return new_position
-
-
-def auto_reorder_by_votes(func):
-    @wraps(func)
-    def wrapper(*args, **kwargs):
-        result = func(*args, **kwargs)
-
-        if getattr(settings, 'AUTO_SORT_BY_VOTES', False):
-            
-            tracks = PlaylistTrack.objects.order_by('-votes', 'position')
-            for idx, track in enumerate(tracks, start=1):
-                track.position = float(idx)
-            
-            PlaylistTrack.objects.bulk_update(tracks, ['position'])
-            logger.info("Playlist automatically reordered by votes")
-        
-        return result
-    return wrapper
