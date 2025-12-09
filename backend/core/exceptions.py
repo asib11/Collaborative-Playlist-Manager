@@ -10,9 +10,6 @@ logger = logging.getLogger(__name__)
 
 
 def custom_exception_handler(exc, context):
-    """
-    Custom exception handler that provides consistent error responses.
-    """
     # Call REST framework's default exception handler first
     response = exception_handler(exc, context)
     
@@ -49,10 +46,8 @@ def custom_exception_handler(exc, context):
 
 
 class DuplicateTrackError(Exception):
-    """Raised when attempting to add a duplicate track to playlist."""
     pass
 
 
 class InvalidPositionError(Exception):
-    """Raised when position calculation fails."""
     pass
